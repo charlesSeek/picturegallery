@@ -1,0 +1,28 @@
+{
+  "name": "picturegallery",
+  "version": "1.0.0",
+  "description": "picture gallery web app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node.js",
+    "react.js",
+    "express",
+    "mongodb"
+  ],
+  "author": "shuchengc",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "connect-multiparty": "^2.0.0",
+    "express": "^4.14.0",
+    "fs": "0.0.2",
+    "mongoose": "^4.5.2",
+    "multiparty": "^4.1.2",
+    "path": "^0.12.7",
+    "react": "^15.1.0",
+    "underscore": "^1.8.3"
+  }
+}

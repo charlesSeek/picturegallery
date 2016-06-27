@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>React Picture Gallery</title>
+	<link rel="stylesheet" href="/libs/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+	<div id="app"></div>
+	<script src="/libs/react/react.js"></script>
+	<script src="/libs/react/react-dom.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+	<script type="text/babel">
+		var PictureGallery = React.createClass({
+			getInitialState: function(){
+				return {
+					formDisplay: false,
+					pictures: []
+				};
+			},
+			componentDidMount: function(){
+				var self = this;
+				this.serverRequest = $.get('/pictures',function(result){
+					var pictures = result.pictures;
+					self.setState({
+						pictures: pictures
+					});
+				})
+			},
+			componentWillUnmount: function() {
+    			this.serverRequest.abort();
+  			},
+			onToggleForm: function(){
+				this.setState({
+					formDisplay: !this.state.formDisplay
+				});
+			},
+			render: function(){
+				return (
+					<div>
+						<Header onToggleForm={this.onToggleForm}/>
+						<div className="container">
+							<PictureForm formDisplay={this.state.formDisplay} onToggleForm={this.onToggleForm}/>
+						</div>
+						<div className="container">
+							<PicturesContainer pictures={this.state.pictures}/>
+						</div>
+					</div>
+				);
+			}
+		});
+		var Header = React.createClass({
+			getInitialState: function(){
+				return {
+					onToggleForm : this.props.onToggleForm
+				}
+			},
+			render: function(){
+				return (
+					<div className="jumbotron text-center">
+						<div className="container">
+							<h1>React Picture Gallery</h1>
+							<p>The demo app of pictures gallery using react.js</p>
+							<ShowAddButton onToggleForm={this.state.onToggleForm}/>
+						</div>
+					</div>
+				);
+			}
+		});
+		var ShowAddButton = React.createClass({
+			render: function(){
+				return (
+					<div>
+						<button id="add-picture-btn" className="btn btn-success pull-right" onClick={this.props.onToggleForm}>Add Picture</button>
+					</div>
+				);
+			}
+		});
+		var  PictureForm = React.createClass({
+			render: function(){
+				var styleObj = {
+					display: this.props.formDisplay ? 'block' : 'none'
+				};
+				return (
+					<form action="/pictures" method ="post" encType="multipart/form-data" style={styleObj}>
+						<div className="form-group">
+							<label for="inputName" className="pull-lef">Picture Name</label>
+							<input type="text" className="form-control" id="iputName" name="picture[name]" placeholder="Picture Name" required/>
+						</div>
+						<div className="form-group">
+							<label for="inputDescription">Picture Description</label>
+							<textarea className="form-control" id="inputDescription" rows="3" name="picture[description]" placeholder="Picture Description" required></textarea>
+						</div>
+						<div className="form-group">
+							<label for="uploadPicture" >Picture File</label>
+    						<input id="uploadPicture" type="file" id="uploadPicture" name="uploadPicture" required/>
+						</div>
+						<button type="submit" className="btn btn-default pull-right">Submit</button>
+						<button onClick={this.props.onToggleForm} type="button" className="btn btn-default pull-right"> Cancel </button>
+					</form>
+				);
+			}
+		});
+		var PicturesContainer = React.createClass({
+			render: function(){
+				var pictures = this.props.pictures;
+				var pictureArray = [];
+				pictures.forEach(function(picture,index){
+					pictureArray.push(
+							<PictureItem picture={picture}/>
+					);
+				});
+				return (
+					<div className="row">
+						{pictureArray}
+					</div>
+				);
+			}
+		});
+		var PictureItem = React.createClass({
+			getInitialState: function(){
+				return {
+					itemDisplay: true
+				};
+			},
+			handleDelete: function(event){
+				var self = this;
+				$.ajax({
+					type: 'DELETE',
+					url: '/pictures?id='+this.props.picture._id
+				})
+				.done (function(results){
+					if (results.success==true){
+						self.setState({
+							itemDisplay: !self.state.itemDisplay
+						});
+					}
+				});
+				
+			},
+			render: function(){
+				var styleObj = {
+					display: this.state.itemDisplay ? 'block' : 'none'
+				};
+				return (
+						<div className="col-md-4 col-sm-6" style={styleObj}>
+							<div className="thumbnail">
+								<img className="resize" src={"/upload/"+this.props.picture.pictureSource} alt=""/>
+								<div className="caption">
+									<h3>{this.props.picture.name}</h3>
+									<p>{this.props.picture.description}</p>
+									<p><a className="btn btn-primary" roll="button" onClick={this.handleDelete}>Delete</a></p>
+								</div>
+							</div>
+						</div>
+				);
+			}
+
+		});
+		ReactDOM.render(<PictureGallery/>,
+		document.getElementById('app'));
+	</script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

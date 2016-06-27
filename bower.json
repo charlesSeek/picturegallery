@@ -1,0 +1,29 @@
+{
+  "name": "picturegallery",
+  "description": "picture gallery web app",
+  "main": "app.js",
+  "authors": [
+    "shuchengc"
+  ],
+  "license": "ISC",
+  "keywords": [
+    "node.js",
+    "react.js",
+    "express",
+    "mongodb"
+  ],
+  "moduleType": [],
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "react": "^15.1.0"
+  }
+}

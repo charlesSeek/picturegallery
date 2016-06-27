@@ -1,0 +1,16 @@
+.container{
+	max-width:1000px;
+	margin-bottom:15px;
+}
+.jumbotron .container{
+	position:relative;
+	max-width: 800px;
+}
+img.resize{
+   width:600px;
+   height:300px;
+}
+#add-picture-btn{
+	margin: 20px 0 0px 15px;
+}
+
